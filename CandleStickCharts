@@ -1,0 +1,12 @@
+rm(list=ls())
+
+setwd("C:/Users/dipanjand/Desktop/Projects/12.10.2015")
+
+Infosys= read.csv("500209.csv")
+
+Infosys= xts(Infosys[,-1], order.by=Infosys[,1])
+
+library(quantmod)
+
+chartSeries(Infosys,theme='white',type='candles',subset='last 3 months',major.ticks='months')
+
