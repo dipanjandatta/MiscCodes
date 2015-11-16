@@ -1,0 +1,42 @@
+# Clean memory
+rm(list=ls())
+
+# Set working directory
+setwd("C:/Users/dipanjand/Desktop/Projects/Training/Kaggle/Springleaf")
+
+# Read data, takes about 5 min
+train= read.csv("Data/train.csv")
+# 145231:1934
+
+# Seperate out the target variable
+df= train[,c(1,1934)]
+
+train[train==-99999] = NA 
+
+# Remove columns with missing percenatge > 0.01 
+check_miss = sapply(train,function(x) sum(is.na(x))/length(x))
+
+train = subset(train, select= check_miss< 0.01) 
+# 145231:1765
+
+# Remove columns with < 90% distinct values
+check_distinct = sapply(train, function(x) max(table(x))/length(x))
+
+train = subset(train, select= check_distinct <0.9)
+# 145231:1340
+
+check_factor = sapply(train, function(col)length(unique(col)))
+train[ ,which(check_factor<10)]= lapply(train[ ,which(check_factor<4)],factor)
+
+
+
+# Split data by data types, 2 data types present
+# Factors
+train.fac= train[,sapply(train,is.factor)] #192
+# Numeric
+train.num= train[,sapply(train,is.numeric)] # 1294
+
+# Remove excess stuff
+rm(train,check_miss,check_distinct,check_factor) 
+
+test1= train.num[1:100,1:100]
